@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>FruitNinja: 3D Object Interior Texture Generation with Gaussian Splatting</title>
-  <!-- Example of using a clean, modern font (Open Sans) from Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Basic reset and body styling */
     * {
       margin: 0;
       padding: 0;
@@ -18,19 +16,16 @@
       color: #333;
       line-height: 1.6;
     }
-    /* Centered content with invisible edges */
     .container {
       max-width: 960px;
       margin: 40px auto;
       padding: 0 20px;
     }
-    /* Header styles */
     header {
       text-align: center;
       margin-bottom: 40px;
     }
     header h1 {
-      font-family: sans-serif;
       font-size: 2.3em;
       margin-bottom: 10px;
     }
@@ -40,7 +35,6 @@
       margin-bottom: 30px;
       font-weight: 600;
     }
-    /* Navigation */
     nav {
       margin-top: 20px;
     }
@@ -61,21 +55,18 @@
       margin-right: 5px;
       fill: currentColor;
     }
-    /* Section headings */
     section h2 {
       text-align: center;
       font-size: 2em;
       margin-bottom: 20px;
       font-weight: 700;
     }
-    /* Abstract styling */
     #abstract p {
       font-size: 0.9em;
       color: #444;
       margin-bottom: 30px;
       white-space: pre-line;
     }
-    /* Videos layout */
     .video-container {
       display: flex;
       flex-wrap: wrap;
@@ -92,7 +83,6 @@
       height: auto;
       display: block;
     }
-    /* Video evaluation summary */
     #video-summary {
       font-size: 1.1em;
       color: #444;
@@ -100,7 +90,6 @@
       margin-bottom: 40px;
       padding: 0 10px;
     }
-    /* BibTex styling */
     #bibtex pre {
       padding: 20px;
       border-radius: 5px;
@@ -111,10 +100,9 @@
       line-height: 1.4;
     }
     #bibtex pre code {
-     background-color: #ffffff; /* White background */
-     color: #444;          /* Black text */
+      background-color: #ffffff;
+      color: #444;
     }
-    /* Footer */
     footer {
       text-align: center;
       font-size: 0.9em;
@@ -131,7 +119,7 @@
       <h1>FruitNinja: 3D Object Interior Texture Generation with Gaussian Splatting</h1>
       <p class="event-info">CVPR 2025</p>
       <nav>
-        <a href="#" title="Code - coming soon">
+        <a href="https://github.com/fanguw/FruitNinja3DInterior" title="Code on GitHub">
           <svg class="github-icon" viewBox="0 0 16 16" aria-hidden="true">
             <path fill-rule="evenodd"
               d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
@@ -142,12 +130,12 @@
               2.11.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01
               1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
           </svg>
-          Code (coming soon)
+          Code
         </a>
         <a href="https://arxiv.org/abs/2411.12089" title="arXiv link">arXiv</a>
       </nav>
     </header>
-    
+
     <section id="abstract">
       <h2>Abstract</h2>
       <p>
@@ -156,31 +144,43 @@ In the real world, objects reveal internal textures when sliced or cut, yet this
 To bridge this gap, we introduce <strong>FruitNinja</strong>, the first method to generate internal textures for 3D objects undergoing geometric and topological changes. Our approach produces objects via 3D Gaussian Splatting (3DGS) with both surface and interior textures synthesized, enabling real-time slicing and rendering without additional optimization. FruitNinja leverages a pre-trained diffusion model to progressively inpaint cross-sectional views and applies voxel-grid-based smoothing to achieve cohesive textures throughout the object. Our OpaqueAtom GS strategy overcomes 3DGS limitations by employing densely distributed opaque Gaussians, avoiding biases toward larger particles that destabilize training and sharp color transitions for fine-grained textures. Experimental results show that FruitNinja substantially outperforms existing approaches, showcasing unmatched visual quality in real-time rendered internal views across arbitrary geometry manipulations.
       </p>
     </section>
-    
+
     <section id="videos">
       <h2>Interior Textures</h2>
       <div class="video-container">
         <div class="video-section">
-          <video controls autoplay muted loop>
+          <video controls autoplay muted playsinline loop>
             <source src="./static/videos/apple.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
         <div class="video-section">
-          <video controls autoplay muted loop>
+          <video controls autoplay muted playsinline loop>
             <source src="./static/videos/bread.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
         <div class="video-section">
-          <video controls autoplay muted loop>
+          <video controls autoplay muted playsinline loop>
             <source src="./static/videos/orange.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
         <div class="video-section">
-          <video controls autoplay muted loop>
+          <video controls autoplay muted playsinline loop>
             <source src="./static/videos/watermelon.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="video-section">
+          <video controls autoplay muted playsinline loop>
+            <source src="./static/videos/apple_demo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="video-section">
+          <video controls autoplay muted playsinline loop>
+            <source src="./static/videos/orange_demo.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
         </div>
@@ -190,17 +190,25 @@ To bridge this gap, we introduce <strong>FruitNinja</strong>, the first method t
       </p>
     </section>
 
+    <section id="method">
+      <h2>Method Overview</h2>
+      <div style="text-align: center; margin-bottom: 40px;">
+        <img src="./static/images/method.jpg" alt="Method Diagram" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 8px; background: white;">
+      </div>
+    </section>    
+    
+
     <section id="bibtex">
       <h2>BibTex</h2>
       <pre><code>@article{wu2024fruitninja3d,
-      title={FruitNinja: 3D Object Interior Texture Generation with Gaussian Splatting}, 
-      author={Fangyu Wu and Yuhao Chen},
-      journal={arXiv preprint arXiv:2411.12089},
-      year={2024}
+  title={FruitNinja: 3D Object Interior Texture Generation with Gaussian Splatting}, 
+  author={Fangyu Wu and Yuhao Chen},
+  journal={arXiv preprint arXiv:2411.12089},
+  year={2024}
 }
       </code></pre>
     </section>
-  
+
     <footer>
       <p>Project page still under construction</p>
     </footer>
