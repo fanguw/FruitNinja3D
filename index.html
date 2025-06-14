@@ -133,10 +133,19 @@
           Code
         </a>
         <a href="https://arxiv.org/abs/2411.12089" title="arXiv link">arXiv</a>
+        <a href="https://cvpr.thecvf.com/virtual/2025/poster/34660" title="CVPR Virtual Poster">CVPR 2025 Poster</a>
       </nav>
     </header>
 
     <section id="abstract">
+      <div style="position: relative; padding-bottom: 40%; height: 0; overflow: hidden; max-width: 640px; margin: 0 auto 20px;">
+        <iframe src="https://www.youtube.com/embed/TO7f4w90XbA"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+        </iframe>
+      </div>
       <h2>Abstract</h2>
       <p>
 In the real world, objects reveal internal textures when sliced or cut, yet this behavior is not well-studied in 3D generation tasks today. For example, slicing a virtual 3D watermelon should reveal flesh and seeds. Given that no available dataset captures an object's full internal structure and collecting data from all slices is impractical, generative methods become the obvious approach. However, current 3D generation and inpainting methods often focus on visible appearance and overlook internal textures. 
@@ -190,14 +199,140 @@ To bridge this gap, we introduce <strong>FruitNinja</strong>, the first method t
       </p>
     </section>
 
-    <section id="method">
-      <h2>Method Overview</h2>
-      <div style="text-align: center; margin-bottom: 40px;">
-        <img src="./static/images/method.jpg" alt="Method Diagram" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 8px; background: white;">
+    <section id="motivation" style="margin-bottom: 40px;">
+      <h2>Motivation</h2>
+    
+      <!-- One row: images & video same size, no scrollbar -->
+      <div style="
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 20px;
+      ">
+        <!-- NeRF -->
+        <div style="flex: 1 1 0; text-align: center;">
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; border: 1px solid #ccc;">
+            <img src="./static/images/nerf.png" alt="NeRF limitations" 
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <p style="font-size: 0.9em; color: #555; margin-top: 8px;">NeRF: Only surface appearance</p>
+        </div>
+    
+        <!-- 3DGS -->
+        <div style="flex: 1 1 0; text-align: center;">
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; border: 1px solid #ccc;">
+            <img src="./static/images/3dgs.jpg" alt="3DGS limitations" 
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <p style="font-size: 0.9em; color: #555; margin-top: 8px;">3DGS: No interior textures</p>
+        </div>
+    
+        <!-- Raw GS Video -->
+        <div style="flex: 1 1 0; text-align: center;">
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 6px; border: 1px solid #ccc;">
+            <video controls autoplay muted playsinline loop 
+                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+              <source src="./static/videos/raw_gs_trim.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <p style="font-size: 0.9em; color: #555; margin-top: 8px;">Raw 3DGS: Artifacts when sliced</p>
+        </div>
       </div>
+    
+      <!-- Text block -->
+      <div style="max-width: 900px; margin: 0 auto;">
+        <p>
+          Existing 3D generative models capture surface details but overlook complex internal structures.
+          When objects are sliced or transformed, the missing interior textures lead to unrealistic artifacts.
+        </p>
+        <p>
+          <strong>FruitNinja</strong> addresses this gap by generating consistent internal textures for 3D Gaussian Splatting,
+          ensuring realistic and artifact-free slicing under arbitrary geometry manipulations.
+        </p>
+      </div>
+    </section>     
+    
+    <section id="method" style="margin-bottom: 40px;">
+      <h2>Method</h2>
+    
+      <!-- Intro paragraph -->
+      <p style="max-width: 900px; margin: 0 auto 30px;">
+        <strong>FruitNinja</strong> generates realistic interior textures for 3D Gaussian Splatting (3DGS) objects,
+        ensuring high fidelity during arbitrary cuts and deformations. The pipeline includes internal Gaussian filling,
+        user-defined cross-section inpainting with a diffusion model, progressive refinement, and Opaque Atomic GS for stability.
+      </p>
+    
+      <!-- Step 1: Internal Gaussians Initialization (image left, text right) -->
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-bottom: 40px;">
+        <div style="flex: 1 1 300px; min-width: 280px;">
+          <img src="./static/images/internal_filling.png" alt="Internal Filling"
+               style="width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <div style="flex: 1 1 400px; min-width: 280px;">
+          <h3>1. Internal Gaussians Initialization</h3>
+          <p>
+            We discretize the object volume into a 3D grid and detect empty regions using an opacity field.
+            Rays along principal axes identify low-opacity voxels, which are filled with small Gaussian primitives,
+            laying the foundation for interior texture synthesis.
+          </p>
+        </div>
+      </div>
+    
+      <!-- Step 2: Conditioned Cross-section Inpainting (text left, image right) -->
+      <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse; gap: 20px; align-items: center; margin-bottom: 40px;">
+        <div style="flex: 1 1 300px; min-width: 280px;">
+          <img src="./static/images/2d_diffusion.png" alt="2D Diffusion Supervision"
+               style="width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <div style="flex: 1 1 400px; min-width: 280px;">
+          <h3>2. Conditioned Cross-section Inpainting</h3>
+          <p>
+            For each user-defined cutting plane, we render masked cross-sectional views and use a depth-conditioned diffusion model,
+            guided by cut-specific text prompts, to inpaint realistic interior slices. These reference views anchor the internal texture learning.
+          </p>
+        </div>
+      </div>
+    
+      <!-- Step 3: Progressive Texture Refinement (image left, text right) -->
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-bottom: 40px;">
+        <div style="flex: 1 1 300px; min-width: 280px;">
+          <img src="./static/images/iterative_refinement.png" alt="Progressive Refinement"
+               style="width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <div style="flex: 1 1 400px; min-width: 280px;">
+          <h3>3. Progressive Texture Refinement</h3>
+          <p>
+            To ensure consistency across slices, we iteratively re-optimize the reference cross-sections with SDS,
+            jointly update 3DGS parameters, and apply voxel-grid smoothing.
+            This harmonizes conflicting features and fills unsupervised regions.
+          </p>
+        </div>
+      </div>
+    
+      <!-- Step 4: Opaque Atomic 3DGS (text left, image right) -->
+      <div style="display: flex; flex-wrap: wrap; flex-direction: row-reverse; gap: 20px; align-items: center;">
+        <div style="flex: 1 1 300px; min-width: 280px;">
+          <img src="./static/images/opaque_atomic_3dgs.png" alt="Opaque Atomic GS"
+               style="width: 100%; border-radius: 6px; border: 1px solid #ccc;">
+        </div>
+        <div style="flex: 1 1 400px; min-width: 280px;">
+          <h3>4. Opaque Atomic 3DGS</h3>
+          <p>
+            We employ an Opaque Atomic GS configuration: particles are clipped to a small scale and assigned high opacity.
+            This prevents unrealistic blending, stabilizes training, and preserves sharp material boundaries under slicing.
+          </p>
+        </div>
+      </div>
+    
+      <!-- Closing summary -->
+      <p style="max-width: 900px; margin: 40px auto 0;">
+        Together, these steps enable FruitNinja to synthesize robust, high-quality internal textures
+        that remain visually coherent for real-time slicing and arbitrary geometry edits.
+      </p>
     </section>    
     
-
     <section id="bibtex">
       <h2>BibTex</h2>
       <pre><code>@article{wu2024fruitninja3d,
